@@ -1,0 +1,17 @@
+#ifndef __OEM_DEFINE_H
+#define __OEM_DEFINE_H
+
+#define VERSION_MAJOR	1
+#define VERSION_MIN	0
+#define CONFIG_MAGIC	0xA5
+#define SLOT_MAGIC	0x5A
+#define CATEGORY_MAGIC	0xAA
+#define CODE_MAGIC	0x55
+#define ENDIAN_CHECK1	0x12
+#define ENDIAN_CHECK2	0x34
+#define ENDIAN_CHECK3	0x56
+#define ENDIAN_CHECK4	0x78
+#define ENDIAN_CHECK	0x12345678
+#define SKIP_UNREG_CODE_FALSE
+
+#endif

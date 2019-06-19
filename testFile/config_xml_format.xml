@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<config>
+	<!-- bellow are global config data -->
+	<config_simlock_sfs_enum_type>0</config_simlock_sfs_enum_type> 
+	<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+	<simlock_device_mode_enum_type>0</simlock_device_mode_enum_type> 
+	<!-- 0:SIMLOCK_DEVICE_NORMAL_OPERATION_MODE, 1:SIMLOCK_DEVICE_EMERGENCY_ONLY_MODE. 2 bits, untill now one bit is enough, but make padding -->
+	<simlock_slot_policy_enum_type>0</simlock_slot_policy_enum_type>
+	<!-- 0:SIMLOCK_SLOT_POLICY_SAME_ON_ALL_SLOTS, other:@see simlock_slot_policy_enum_type. 4 bits -->
+	<simlock_subscription_policy_enum_type>0</simlock_subscription_policy_enum_type>
+	<!-- 0:SIMLOCK_SUBSCRIPTION_POLICY_INDEPENDENT, other:@see simlock_subscription_policy_enum_type. 4 bits -->
+	<simlock_rsu_mode_enum_type>0</simlock_rsu_mode_enum_type>
+	<!-- 0:SIMLOCK_RSU_MODE_NO_RSU, other:@see simlock_rsu_mode_enum_type -->
+
+	<!-- bellow are config data for certain slot -->
+	<slot>
+		<simlock_slot_enum_type>0</simlock_slot_enum_type>
+		<!-- 0:SIMLOCK_SLOT_1, @see simlock_slot_enum_type -->
+		<simlock_disabled_slot_data_type>0</simlock_disabled_slot_data_type>
+		<!-- 0:not disable, 1:set disable -->
+
+		<!-- if no category is set, that means no category type of personalization is enabled -->
+		<!-- not all the category type are required, missing category means missing this category file -->
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>0</simlock_category_enum_type>
+			<!-- 0:SIMLOCK_CATEGORY_3GPP_NW, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+			<salt></salt>
+			<!-- salt is device unique, should NOT be set here -->
+			<hash></hash>
+			<!-- hash is device unique, should NOT be set here -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>31</mcc> <!-- ascii digit, max 3 byte, padding with * in tail. this will parse as '31*' -->
+				<mnc>170</mnc> <!-- ascii digit, max 3 byte, padding with * in tail -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>1</simlock_category_enum_type>
+			<!-- 1:SIMLOCK_CATEGORY_3GPP_NS, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<imsi_digit6>1</imsi_digit6> <!-- at least 2 digit, 00 to FF, this will parse as 0x01 -->
+				<imsi_digit7>2</imsi_digit7> <!-- at least 2 digit, 00 to FF, this will parse as 0x02 -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<imsi_digit6>34</imsi_digit6> <!-- at least 2 digit, 00 to FF -->
+				<imsi_digit7>45</imsi_digit7> <!-- at least 2 digit, 00 to FF -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<imsi_digit6>56</imsi_digit6> <!-- at least 2 digit, 00 to FF -->
+				<imsi_digit7>67</imsi_digit7> <!-- at least 2 digit, 00 to FF -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<imsi_digit6>78</imsi_digit6> <!-- at least 2 digit, 00 to FF -->
+				<imsi_digit7>89</imsi_digit7> <!-- at least 2 digit, 00 to FF -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<imsi_digit6>90</imsi_digit6> <!-- at least 2 digit, 00 to FF -->
+				<imsi_digit7>01</imsi_digit7> <!-- at least 2 digit, 00 to FF -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>2</simlock_category_enum_type>
+			<!-- 2:SIMLOCK_CATEGORY_3GPP_SP, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<gid1>000</gid1> <!-- 00 to FE, max 8 byte length. padding with 0xFF. this is 1 byte, this will parse as 0x00, discard the odd tail -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<gid1>1122</gid1> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<gid1>334455</gid1> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<gid1>AA</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<gid1>FE</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>3</simlock_category_enum_type>
+			<!-- 3:SIMLOCK_CATEGORY_3GPP_CP, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<gid1>00</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<gid2>00</gid2> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<gid1>1122</gid1> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+				<gid2>1122</gid2> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<gid1>334455</gid1> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+				<gid2>334455</gid2> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<gid1>AA</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<gid2>AA</gid2> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<gid1>FE</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<gid2>FE</gid2> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>4</simlock_category_enum_type>
+			<!-- 4:SIMLOCK_CATEGORY_3GPP_SPN, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<spn_valid>0</spn_valid> <!-- 0:invalid, 1:valid -->
+				<spn_data>000</spn_data> <!-- 00 to FE, max 16 byte length. this is 1 byte, this will parse as 0x00, discard the odd tail. padding with 0xFF.  -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<spn_valid>0</spn_valid> <!-- 0:invalid, 1:valid -->
+				<spn_data>1122</spn_data> <!-- 00 to FE, max 16 byte length. this is 2 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<spn_valid>1</spn_valid> <!-- 0:invalid, 1:valid -->
+				<spn_data>334455</spn_data> <!-- 00 to FE, max 16 byte length. this is 3 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<spn_valid>1</spn_valid> <!-- 0:invalid, 1:valid -->
+				<spn_data>AA</spn_data> <!-- 00 to FE, max 16 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<spn_valid>1</spn_valid> <!-- 0:invalid, 1:valid -->
+				<spn_data>FE</spn_data> <!-- 00 to FE, max 16 byte length. this is 1 byte -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>5</simlock_category_enum_type>
+			<!-- 5:SIMLOCK_CATEGORY_3GPP_SP_EHPLMN, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<gid1>00</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<ehplmnmcc>310</ehplmnmcc>
+				<ehplmnmnc>170</ehplmnmnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<gid1>1122</gid1> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+				<ehplmnmcc>310</ehplmnmcc>
+				<ehplmnmnc>410</ehplmnmnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<gid1>334455</gid1> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+				<ehplmnmcc>310</ehplmnmcc>
+				<ehplmnmnc>030</ehplmnmnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<gid1>AA</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<ehplmnmcc>310</ehplmnmcc>
+				<ehplmnmnc>560</ehplmnmnc>
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<gid1>FE</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<ehplmnmcc>310</ehplmnmcc>
+				<ehplmnmnc>180</ehplmnmnc>
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>6</simlock_category_enum_type>
+			<!-- 6:SIMLOCK_CATEGORY_3GPP_ICCID, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<iccid>01234567890123456789</iccid> <!-- 20 byte ascii digit code -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<iccid>12345678901234567890</iccid> <!-- 20 byte ascii digit code -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<iccid>ABCDEFGHIJKLMNOPQRST</iccid> <!-- 20 byte ascii digit code,??? not digit code, will be pass to * ??? -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<iccid>abcdefghijklmnopqrst</iccid> <!-- 20 byte ascii digit code,??? not digit code, will be pass to * ??? -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<iccid>898600MFSSYYGXXXXXXP</iccid> <!-- 20 byte ascii digit code,??? not digit code, will be pass to * ??? -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>7</simlock_category_enum_type>
+			<!-- 7:SIMLOCK_CATEGORY_3GPP_IMPI, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<impi>01234567890123456789</impi> <!-- max 64 byte ascii code, support at most one '*' -->
+			</code>
+			<code>
+				<impi>12345678901234567890</impi> <!-- max 64 byte ascii code -->
+			</code>
+			<code>
+				<impi>abcdefghijklmnopqrstuvwxyz</impi> <!-- max 64 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+			<code>
+				<impi>ABCDEFGHIJKLMNOPQRSTUVWXYZ</impi> <!-- max 64 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>8</simlock_category_enum_type>
+			<!-- 8:SIMLOCK_CATEGORY_3GPP_NS_SP, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<imsi_digit6>1</imsi_digit6>
+				<imsi_digit7>2</imsi_digit7>
+				<gid1>00</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<imsi_digit6>3</imsi_digit6>
+				<imsi_digit7>4</imsi_digit7>
+				<gid1>1122</gid1> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<imsi_digit6>5</imsi_digit6>
+				<imsi_digit7>6</imsi_digit7>
+				<gid1>334455</gid1> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<imsi_digit6>7</imsi_digit6>
+				<imsi_digit7>8</imsi_digit7>
+				<gid1>AA</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<imsi_digit6>9</imsi_digit6>
+				<imsi_digit7>0</imsi_digit7>
+				<gid1>FE</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>9</simlock_category_enum_type>
+			<!-- 9:SIMLOCK_CATEGORY_3GPP_SIM, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<msin>0123456789</msin> <!-- max 10 byte ascii code, this may be digit, but we don't treat it -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<msin>1234567890</msin> <!-- max 10 byte ascii code -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<msin>abcdefghij</msin> <!-- max 10 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<msin>ABCDEFGHIJ</msin> <!-- max 10 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<msin>abCD</msin> <!-- max 10 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>10</simlock_category_enum_type>
+			<!-- 10:SIMLOCK_CATEGORY_3GPP2_NW_TYPE1, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>11</simlock_category_enum_type>
+			<!-- 11:SIMLOCK_CATEGORY_3GPP2_NW_TYPE2, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<irm>0123</irm> <!-- max 4 byte, as msin, ascii code, this may be digit -->
+			</code>
+			<code>
+				<irm>4567</irm>
+			</code>
+			<code>
+				<irm>89ab</irm>
+			</code>
+			<code>
+				<irm>CDEF</irm>
+			</code>
+			<code>
+				<irm>zxGH</irm>
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category> <!-- not support the kind of personalization -->
+			<simlock_category_enum_type>12</simlock_category_enum_type>
+			<!-- 12:SIMLOCK_CATEGORY_3GPP2_HRPD, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>0</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category> <!-- not support the kind of personalization -->
+			<simlock_category_enum_type>13</simlock_category_enum_type>
+			<!-- 13:SIMLOCK_CATEGORY_3GPP2_SP, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>2</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<gid1>00</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<gid1>1122</gid1> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<gid1>334455</gid1> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<gid1>AA</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<gid1>FE</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category> <!-- not support the kind of personalization -->
+			<simlock_category_enum_type>14</simlock_category_enum_type>
+			<!-- 14:SIMLOCK_CATEGORY_3GPP2_CP, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>2</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<gid1>00</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<gid2>00</gid2> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<gid1>1122</gid1> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+				<gid2>1122</gid2> <!-- 00 to FE, max 8 byte length. this is 2 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<gid1>334455</gid1> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+				<gid2>334455</gid2> <!-- 00 to FE, max 8 byte length. this is 3 byte -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<gid1>AA</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<gid2>AA</gid2> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<gid1>FE</gid1> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+				<gid2>FE</gid2> <!-- 00 to FE, max 8 byte length. this is 1 byte -->
+			</code>
+		</category>
+		<!-- bellow are category for this slot -->
+		<category>
+			<simlock_category_enum_type>15</simlock_category_enum_type>
+			<!-- 15:SIMLOCK_CATEGORY_3GPP2_RUIM, other:@see simlock_category_enum_type -->
+			<simlock_status_enum_type>1</simlock_status_enum_type>
+			<!-- 0:SIMLOCK_DISABLED_FILE_NOT_PRESENT, 1: SIMLOCK_ENABLED, 2:SIMLOCK_DISABLED_FILE_PRESENT -->
+			<simlock_sfs_enum_type>0</simlock_sfs_enum_type> 
+			<!-- 0:SIMLOCK_SFS_LOCAL, 1:SIMLOCK_SFS_REMOTE. 2 bits, untill now one bit is enough, but make padding -->
+			<auto_lock>0</auto_lock>
+			<!-- 0:not auto lock, 1:set auto lock -->
+			<is_blacklist>0</is_blacklist>
+			<!-- 0:is NOT blacklist, 1:do BE blacklist -->
+			<retry_times>10</retry_times>
+			<!-- the unlock retry times, usually be 10 -->
+
+			<!-- bellow are code data for this category -->
+			<code>
+				<mcc>310</mcc>
+				<mnc>170</mnc>
+				<msin>0123456789</msin> <!-- max 10 byte ascii code, this may be digit, but we don't treat it -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>410</mnc>
+				<msin>1234567890</msin> <!-- max 10 byte ascii code -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>030</mnc>
+				<msin>abcdefghij</msin> <!-- max 10 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+			<code>
+				<mcc>310</mcc>
+				<mnc>560</mnc>
+				<msin>ABCDEFGHIJ</msin> <!-- max 10 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+			<code>
+				<mcc>460</mcc>
+				<mnc>00</mnc>
+				<msin>abCD</msin> <!-- max 10 byte ascii code,??? does it treat lower and upper ??? -->
+			</code>
+		</category>
+	</slot>
+</config>
+
