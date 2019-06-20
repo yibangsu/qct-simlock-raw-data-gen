@@ -8,13 +8,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "ParseConfigData.h"
+#include "Signature.h"
 
 using namespace std;
 using namespace tinyxml2;
 
 /* global var */
 char	*configData 	= NULL,
-	*configXml 	= NULL;
+	*configXml 	= NULL,
+	*privateKeyPem 	= NULL,
+	*publicKeyPem 	= NULL;
 
 
 /* parsing the runtime arguments */
@@ -26,7 +29,6 @@ char	*configData 	= NULL,
 int parseArgv(int argc, char** argv)
 {
 	int index = 0;
-	bool bParse = true;
 
 	while(index < argc) {
 		#ifdef DEBUG
@@ -50,10 +52,27 @@ int parseArgv(int argc, char** argv)
 			#endif
 			index++;
 		}
+		else if (!strcmp("-private-key", argv[index]))
+		{
+			if (++index >= argc) return -1;
+			privateKeyPem = argv[index];
+			#ifdef DEBUG
+			fprintf(stdout, "get privateKeyPem argv[%d]: %s\n", index, privateKeyPem);
+			#endif
+			index++;
+		}
+		else if (!strcmp("-public-key", argv[index]))
+		{
+			if (++index >= argc) return -1;
+			publicKeyPem = argv[index];
+			#ifdef DEBUG
+			fprintf(stdout, "get publicKeyPem argv[%d]: %s\n", index, publicKeyPem);
+			#endif
+			index++;
+		}
 		else if (!strcmp("-check", argv[index]))
 		{
 			if (++index >= argc) return -1;
-			bParse = false;
 			configData = argv[index];
 			#ifdef DEBUG
 			fprintf(stdout, "get checkData argv[%d]: %s\n", index, configData);
@@ -80,7 +99,7 @@ int parseArgv(int argc, char** argv)
 		}
 	};
 
-	if (bParse && (!configData || !configXml)) return -1;
+	if (!configData || !configXml) return -1;
 
 	return 0;
 }
@@ -89,9 +108,9 @@ int parseArgv(int argc, char** argv)
 void help(const char* cmd)
 {
 	fprintf(stdout, "Usage:\n\
-	\t %s -in [configXml] -out [configData]\n\
-	\t %s -check [configData]\n\
-	\t %s -run-test-suit [configData]\n", cmd, cmd, cmd);
+	\t %s -in <configXml> -out <configData> [-private-key <privateKeyPem>]\n\
+	\t %s -check <configData> [-public-key <privateKeyPem>]\n\
+	\t %s -run-test-suit <configData> [-public-key <privateKeyPem>]\n", cmd, cmd, cmd);
 }
 
 int main(int argc, char** argv)
@@ -108,19 +127,53 @@ int main(int argc, char** argv)
 	}
 
 	ParseConfigData *configDataParser = new ParseConfigData(configXml, configData);
+	ASSERT(configDataParser);
 
 	/* check config data and return */
 	if (1 == ret)
 	{
-		configDataParser->parseRawData();
+		#ifdef DEBUG
+		fprintf(stdout, "run raw data parse:\n");
+		#endif
+		uint32 readLen = configDataParser->parseRawData();
+		if (publicKeyPem)
+		{
+			#ifdef DEBUG
+			fprintf(stdout, "run raw data signature verify:\n");
+			#endif
+			Signature *signature = new Signature(privateKeyPem, configData);
+			signature->verify(readLen, publicKeyPem);
+		}
 	}
 	else if (2 == ret)
 	{
+		#ifdef DEBUG
+		fprintf(stdout, "run test suit:\n");
+		#endif
 		configDataParser->runTestSuit();
+		if (publicKeyPem)
+		{
+			#ifdef DEBUG
+			fprintf(stdout, "run sign test suit:\n");
+			#endif
+			Signature *signature = new Signature(privateKeyPem, configData);
+			signature->runTestSuit(publicKeyPem);
+		}
 	}
 	else
 	{
+		#ifdef DEBUG
+		fprintf(stdout, "run config data parse:\n");
+		#endif
 		configDataParser->parseConfigData();
+		if (privateKeyPem)
+		{
+			#ifdef DEBUG
+			fprintf(stdout, "run config data sign:\n");
+			#endif
+			Signature *signature = new Signature(privateKeyPem, configData);
+			signature->genSignature();
+		}
 	}
 
 	return 0;

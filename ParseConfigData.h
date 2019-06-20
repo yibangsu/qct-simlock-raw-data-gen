@@ -1,15 +1,9 @@
-#include "common_def.h"
-#include "simlock_common.h"
+#ifndef PARSE_CONFIG_H
+#define PARSE_CONFIG_H
+
 #include "tinyxml2.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "oem.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include "StoreConfigData.h"
-#include <assert.h>
+#include "common_def.h"
 
 using namespace std;
 using namespace tinyxml2;
@@ -65,6 +59,7 @@ using namespace tinyxml2;
 		if (len) \
 		{ \
 			fprintf(stdout, #tag":="#type"\n", y); \
+			readTotalLen++; \
 		} \
 		else \
 		{ \
@@ -265,13 +260,14 @@ private:
 	uint8 parseHex(char high, char low);
 
 public:
-	ParseConfigData(XMLElement *xmlRoot, StoreConfigData *configStore);
 	ParseConfigData(const char* configXml, const char* configData);
 	~ParseConfigData();
 
 	int parseConfigData(XMLElement *xmlOtherRoot = NULL);
 
-	int parseRawData(int fd = -1);
+	int parseRawData(const char *dataFile = NULL);
 
 	void runTestSuit();
 };
+
+#endif

@@ -17,7 +17,7 @@ BUILD_OS		:= linux
 endif
 # set DEBUG := YES to enable gdb
 ifeq (, ${DEBUG})
-DEBUG			:= YES
+DEBUG			:= NO
 endif
 # set GPROF : YES to enable gp
 ifeq (, ${GPROF})
@@ -73,11 +73,6 @@ XML_DIR			:= tinyxml2
 XML_TARGET		:= libtinyxml2.a
 XML_LIB			:= -ltinyxml2
 XML_INC			:= ./
-# set data encrypt tool, locale at ./extra/xxx
-# DATA_ENC_DIR		:= idea_cbc
-# DATA_ENC_TARGET		:= libidea_cbc.a
-# DATA_ENC_LIB		:= -lidea_cbc
-# DATA_ENC_INC		:= ./
 
 #****************************************************************************
 # compiler define
@@ -99,14 +94,14 @@ endif
 # build option
 #****************************************************************************
 
-DEBUG_CFLAGS		:= -Wall -Wno-format -g -DDEBUG -std=c++11 
-RELEASE_CFLAGS		:= -Wall -Wno-unknown-pragmas -Wno-format -O3 -std=c++11
+DEBUG_CFLAGS		:= -Wall -Wno-format -g -DDEBUG  
+RELEASE_CFLAGS		:= -Wall -Wno-unknown-pragmas -Wno-format -O3 
 
-DEBUG_LDFLAGS		:= -g -std=c++11
-RELEASE_LDFLAGS		:= -std=c++11
+DEBUG_LDFLAGS		:= -g 
+RELEASE_LDFLAGS		:= 
 
-INCS			:= -I./inc -I./ -I./extra/${XML_DIR}/${XML_INC} #-I./extra/${DATA_ENC_DIR}/${DATA_ENC_INC}
-LIBS			:= -L./extra/${XML_DIR} ${XML_LIB} #-L./extra/${DATA_ENC_DIR} ${DATA_ENC_LIB}
+INCS			:= -I./ -I./inc -I./extra/${XML_DIR}/${XML_INC} -I/usr/include
+LIBS			:= -L./extra/${XML_DIR} ${XML_LIB} -lcrypto -lpthread
 
 ifeq (YES, ${GPROF})
 	CFLAGS		:= ${CFLAGS} -pg -O3
@@ -134,12 +129,13 @@ endif
 #****************************************************************************
 
 CFLAGS			:= ${CFLAGS}   ${DEFS}
-CXXFLAGS		:= ${CXXFLAGS} ${DEFS}
+CXXFLAGS		:= ${CXXFLAGS} ${DEFS} -std=c++11
+CXXLDFLAGS		:= ${LDFLAGS} -std=c++11
 
 #****************************************************************************
 # Source files
 #****************************************************************************
-SRC		= ${wildcard ./*.cpp}
+SRC			:= ${wildcard ./*.cpp}
 
 #****************************************************************************
 # build target
@@ -154,16 +150,11 @@ endif
 # set default target 
 all: ${TARGET}
 
-${TARGET}: oemMark ${patsubst %.cpp, %.o, $(SRC)} xmlParse dataEnc
-	${LD} -o $@ ${patsubst %.cpp, %.o, $(SRC)} ${LIBS} ${LDFLAGS}
+${TARGET}: oemMark ${patsubst %.cpp, %.o, ${SRC}} xmlParse
+	${LD} -o $@ ${patsubst %.cpp, %.o, ${SRC}} ${LIBS} ${CXXLDFLAGS}
 
 xmlParse:
 	make -C ./extra/${XML_DIR} ${XML_TARGET}
-
-dataEnc:
-#	make -C ./extra/${DATA_ENC_DIR} ${DATA_ENC_TARGET}
-	@echo -e "\033[33m ""no data encryption needed in data parsing"" \033[0m"
-
 
 # Rules for compiling source files to object files
 %.o: %.c
@@ -174,12 +165,13 @@ dataEnc:
 
 c: clean
 
-clean:
+clean: xmlParseClean
 	${RM} ${TARGET}
 	${RM} ${patsubst %.cpp, %.o, $(SRC)}
 	${RM} ${patsubst %.cpp, %.d, $(SRC)}
+
+xmlParseClean:
 	make -C ./extra/${XML_DIR} clean
-#	make -C ./extra/${DATA_ENC_DIR} clean
 
 rebuild: clean all
 

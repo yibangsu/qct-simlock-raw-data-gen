@@ -1,28 +1,24 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
+
 #include "ParseConfigData.h"
-
-using namespace std;
-using namespace tinyxml2;
-
-/* new */
-ParseConfigData::ParseConfigData(XMLElement *xmlRoot, StoreConfigData *configStore)
-{
-	assert(configStore);
-	this->configStore = configStore;
-
-	this->xmlRoot = xmlRoot;
-}
+#include "simlock_common.h"
+#include "oem.h"
 
 /* new */
 ParseConfigData::ParseConfigData(const char* configXml, const char* configData)
 {
-	assert(configData);
+	ASSERT(configData);
 
-	int configDataFd = open(configData, O_RDWR|O_CREAT|O_TRUNC, 0666);
-	this->configStore = new StoreConfigData(configDataFd);
+	this->configStore = new StoreConfigData(configData);
 	
 	if (configXml) {
 		XMLError xmlRet = doc.LoadFile(configXml);
-		assert(XML_SUCCESS == xmlRet);
+		ASSERT(XML_SUCCESS == xmlRet);
 		this->xmlRoot = doc.FirstChildElement("config");
 	}
 }
@@ -31,6 +27,40 @@ ParseConfigData::ParseConfigData(const char* configXml, const char* configData)
 ParseConfigData::~ParseConfigData()
 {
 	configStore->push();
+}
+
+/* parse ascii value to hex, pad 0xFF */
+uint8 ParseConfigData::parseHex(char high, char low)
+{
+	uint8 value = 0xFF;
+
+	if (high >= '0' && high <= '9')
+	{
+		value |= (((high - '0') << 4) & 0xF0);
+	}
+	else if (high >= 'a' && high <= 'f')
+	{
+		value |= (((high - 'a' + 10) << 4) & 0xF0);
+	}
+	else if (high >= 'A' && high <= 'F')
+	{
+		value |= (((high - 'A' + 10) << 4) & 0xF0);
+	}
+
+	if (low >= '0' && low <= '9')
+	{
+		value |= ((low - '0') & 0x0F);
+	}
+	else if (low >= 'a' && low <= 'f')
+	{
+		value |= ((low - 'a' + 10) & 0x0F);
+	}
+	else if (low >= 'A' && low <= 'F')
+	{
+		value |= ((low - 'A' + 10) & 0x0F);
+	}
+
+	return value;
 }
 
 /* parse 3GPP Network Category, data hold in simlock_category_data_type */
@@ -991,19 +1021,23 @@ int ParseConfigData::parseConfigData(XMLElement *xmlOtherRoot)
 	// push finish
 	pushFinish();
 
+	// push signature
+	
+
 	return 0;
 }
 
 /* parse raw data to check if the raw data gen successfully */
-int ParseConfigData::parseRawData(int fd)
+int ParseConfigData::parseRawData(const char *dataFile)
 {
-	if (fd >= 0)
+	if (dataFile)
 	{
-		this->configStore = new StoreConfigData(fd);
+		this->configStore = new StoreConfigData(dataFile);
 	}
 
 	// set var to hold read len
 	uint32 readLen = 0;
+	uint32 readTotalLen = 0;
 
 	// get magic
 	getAndPrintUint8('magic', '0x%x');
@@ -1092,6 +1126,7 @@ int ParseConfigData::parseRawData(int fd)
 			categoryData.category_type = (simlock_category_enum_type)y;
 			// read the category list buffer, it's uint8, can simply memcpy
 			readLen = getData((uint8*)(&(categoryData.code_data)), categorySize);
+			readTotalLen += readLen;
 			// check read len
 			if (readLen < categorySize)
 			{
@@ -1106,60 +1141,26 @@ int ParseConfigData::parseRawData(int fd)
 		}
 	}
 
-	return 0;
-}
-
-/* parse ascii value to hex, pad 0xFF */
-uint8 ParseConfigData::parseHex(char high, char low)
-{
-	uint8 value = 0xFF;
-
-	if (high >= '0' && high <= '9')
-	{
-		value |= (((high - '0') << 4) & 0xF0);
-	}
-	else if (high >= 'a' && high <= 'f')
-	{
-		value |= (((high - 'a' + 10) << 4) & 0xF0);
-	}
-	else if (high >= 'A' && high <= 'F')
-	{
-		value |= (((high - 'A' + 10) << 4) & 0xF0);
-	}
-
-	if (low >= '0' && low <= '9')
-	{
-		value |= ((low - '0') & 0x0F);
-	}
-	else if (low >= 'a' && low <= 'f')
-	{
-		value |= ((low - 'a' + 10) & 0x0F);
-	}
-	else if (low >= 'A' && low <= 'F')
-	{
-		value |= ((low - 'A' + 10) & 0x0F);
-	}
-
-	return value;
+	return readTotalLen;
 }
 
 /* gen a test xml to check base function */
 #define TEST_XML	"test.xml"
 void ParseConfigData::genTestXml()
 {
-	int fd = open(TEST_XML, O_RDWR|O_CREAT|O_TRUNC, 0666);
+	FILE *file = fopen(TEST_XML, "w+");
 	char str[512];
 	strcpy(str, "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n");
-	write(fd, str, strlen(str));
+	fwrite(str, strlen(str), 1, file);
 	strcpy(str, "<config>\n");
-	write(fd, str, strlen(str));
+	fwrite(str, strlen(str), 1, file);
 	strcpy(str, "\t<slot></slot>\n");
-	write(fd, str, strlen(str));
+	fwrite(str, strlen(str), 1, file);
 	strcpy(str, "\t<slot><simlock_slot_enum_type>123</simlock_slot_enum_type></slot>\n");
-	write(fd, str, strlen(str));
+	fwrite(str, strlen(str), 1, file);
 	strcpy(str, "</config>\n");
-	write(fd, str, strlen(str));
-	close(fd);
+	fwrite(str, strlen(str), 1, file);
+	fclose(file);
 }
 
 /* test suit to check the base function */
@@ -1168,24 +1169,24 @@ void ParseConfigData::runTestSuit()
 	genTestXml();
 	XMLDocument doc;
 	XMLError xmlRet = doc.LoadFile(TEST_XML);
-	assert(XML_SUCCESS == xmlRet);
-	assert(configStore);
+	ASSERT(XML_SUCCESS == xmlRet);
+	ASSERT(configStore);
 	xmlRoot = doc.FirstChildElement("config");
-	assert(xmlRoot);
+	ASSERT(xmlRoot);
 
 	fprintf(stdout, "BEGIN: check FIRST slot tag, expect NO simlock_slot_enum_type get!\n");
 	XMLElement *slot = xmlRoot->FirstChildElement("slot");
-	assert(slot);
+	ASSERT(slot);
 	XMLElement *slot_enum = slot->FirstChildElement("simlock_slot_enum_type");
-	assert(!slot_enum);
+	ASSERT(!slot_enum);
 	fprintf(stdout, "SUCCESS END: check FIRST slot tag, expect NO simlock_slot_enum_type get !\n");
 
 	fprintf(stdout, "BEGIN: check SECOND slot tag, expect ONE simlock_slot_enum_type get!\n");
 	slot = slot->NextSiblingElement("slot");
-	assert(slot);
+	ASSERT(slot);
 	slot_enum = slot->FirstChildElement("simlock_slot_enum_type");
-	assert(slot_enum);
-	assert(123 == slot_enum->IntText());
+	ASSERT(slot_enum);
+	ASSERT(123 == slot_enum->IntText());
 	fprintf(stdout, "SUCCESS END: check SECOND slot tag, expect ONE simlock_slot_enum_type get!\n");
 	
 	configStore->runTestSuit();

@@ -1,11 +1,19 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
+
 #include "StoreConfigData.h"
+#include "oem.h"
 
 /* new */
-StoreConfigData::StoreConfigData(int fd)
+StoreConfigData::StoreConfigData(const char *dataFile)
 	: sBufferLeft(BUFF_SIZE)
 	, readBufferLeft(0)
 {
-	this->fd = fd;
+	file = fopen(dataFile, "w+b");
 	memset(sectorBuffer, 0x0, BUFF_SIZE);
 	sectorPtr = sectorBuffer;
 	memset(readSectorBuffer, 0x0, BUFF_SIZE);
@@ -16,7 +24,7 @@ StoreConfigData::StoreConfigData(int fd)
 StoreConfigData::~StoreConfigData()
 {
 	push();
-	close(fd);
+	fclose(file);
 }
 
 /* reset data */
@@ -39,7 +47,10 @@ int StoreConfigData::store(uint8* data, uint32 length)
 		data += sBufferLeft;
 		length -= sBufferLeft;
 
-		write(fd, sectorBuffer, BUFF_SIZE);
+		if (!fwrite(sectorBuffer, BUFF_SIZE, 1, file))
+		{
+			return -1;
+		}
 		memset(sectorBuffer, 0x0, BUFF_SIZE);
 		sBufferLeft = BUFF_SIZE;
 		sectorPtr = sectorBuffer;
@@ -63,7 +74,7 @@ int StoreConfigData::push()
 
 	if (BUFF_SIZE > sBufferLeft)
 	{
-		writeLen = write(fd, sectorBuffer, BUFF_SIZE - sBufferLeft);
+		writeLen = fwrite(sectorBuffer, 1, BUFF_SIZE - sBufferLeft, file);
 		memset(sectorBuffer, 0x0, BUFF_SIZE);
 		sBufferLeft = BUFF_SIZE;
 		sectorPtr = sectorBuffer;
@@ -83,8 +94,8 @@ uint32 StoreConfigData::get(uint8* data, uint32 length)
 
 		if (0 >= readBufferLeft)
 		{
-			readBufferLeft 	= read(fd, readSectorBuffer, BUFF_SIZE);
-			if (0 > readBufferLeft) return readTotalLen;
+			readBufferLeft 	= fread(readSectorBuffer, 1, BUFF_SIZE, file);
+			if (0 >= readBufferLeft) return readTotalLen;
 			readSectorPtr 	= readSectorBuffer;
 		}
 
@@ -107,13 +118,14 @@ void StoreConfigData::runTestSuit()
 {
 	uint8 testStoreData[8] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef};
 	uint8 readStoreData[8] = {0};
-	assert(0 < fd);
+	ASSERT(file);
 	store(testStoreData, 8);
-	assert((sBufferLeft + 8) == BUFF_SIZE);
+	ASSERT((sBufferLeft + 8) == BUFF_SIZE);
 	int writeLen = push();
-	assert(8 == writeLen);
-	lseek(fd, 0, SEEK_SET);
-	int readLen = read(fd, readStoreData, 8);
-	assert(8 == readLen);
-	assert(memcmp(testStoreData, readStoreData, 8) == 0);
+	ASSERT(8 == writeLen);
+	fseek(file, 0, SEEK_SET);
+	int readLen = get(readStoreData, 8);
+	ASSERT(8 == readLen);
+	ASSERT(memcmp(testStoreData, readStoreData, 8) == 0);
+	fseek(file, 0, SEEK_SET);
 }

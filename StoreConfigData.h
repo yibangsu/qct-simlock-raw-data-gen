@@ -1,24 +1,15 @@
-#include "common_def.h"
-#include "simlock_common.h"
-#include "tinyxml2.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "oem.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <assert.h>
+#ifndef __STORE_CONFIG_DATA_H
+#define __STORE_CONFIG_DATA_H
 
-using namespace std;
-using namespace tinyxml2;
+#include "common_def.h"
+#include <fcntl.h>
 
 #define BUFF_SIZE	512
 
 class StoreConfigData
 {
 private:
-	int 	fd;
+	FILE 	*file;
 
 	uint8 	sectorBuffer[BUFF_SIZE];
 	uint8 	*sectorPtr;
@@ -30,7 +21,7 @@ private:
 
 	
 public:
-	StoreConfigData(int fd);
+	StoreConfigData(const char *dataFile);
 	~StoreConfigData();
 
 	void reset();
@@ -41,3 +32,5 @@ public:
 
 	void runTestSuit();
 };
+
+#endif

@@ -28,4 +28,9 @@
   typedef  unsigned char boolean;
 #endif
 
+
+#include <assert.h>
+
+#define ASSERT(...)	assert(__VA_ARGS__)
+
 #endif
