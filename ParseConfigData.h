@@ -3,6 +3,7 @@
 
 #include "tinyxml2.h"
 #include "StoreConfigData.h"
+#include "ReadConfigData.h"
 #include "common_def.h"
 
 using namespace std;
@@ -55,7 +56,7 @@ using namespace tinyxml2;
 
 #define getAndPrintUint8(tag, type) \
 	{ \
-		uint32 len = this->configStore->get(&y, 1); \
+		uint32 len = this->configReader->get(&y, 1); \
 		if (len) \
 		{ \
 			fprintf(stdout, #tag":="#type"\n", y); \
@@ -69,7 +70,7 @@ using namespace tinyxml2;
 	}
 
 #define getData(data, length) \
-	this->configStore->get(data, length)
+	this->configReader->get(data, length)
 
 #define setEhplmn(_code) \
 	setMcc(_code.mcc, "ehplmnmcc"); \
@@ -227,11 +228,12 @@ typedef enum
 class ParseConfigData
 {
 private:
-	XMLDocument 		doc;
-	StoreConfigData 	*configStore;
-	XMLElement 		*xmlRoot;
+	XMLDocument 		*doc 		= NULL;
+	StoreConfigData 	*configStore 	= NULL;
+	ReadConfigData		*configReader 	= NULL;
+	XMLElement 		*xmlRoot 	= NULL;
 
-	uint8			y;
+	uint8			y 		= 0;
 
 	int parseSlotData(XMLElement *xmlRoot);
 	int parseCategoryData(XMLElement *xmlRoot);
@@ -261,11 +263,12 @@ private:
 
 public:
 	ParseConfigData(const char* configXml, const char* configData);
+	ParseConfigData(const char* configData);
 	~ParseConfigData();
 
 	int parseConfigData(XMLElement *xmlOtherRoot = NULL);
 
-	int parseRawData(const char *dataFile = NULL);
+	int parseRawData();
 
 	void runTestSuit();
 };

@@ -9,6 +9,8 @@ private:
 	const char		*privateKeyPem;
 	const char		*dest;
 
+	uint32 fixEndian(uint32 src, uint8 bigEndian);
+
 public:
 	Signature(const char *privateKeyPem, const char *dest);
 	~Signature();

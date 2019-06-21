@@ -17,7 +17,7 @@ BUILD_OS		:= linux
 endif
 # set DEBUG := YES to enable gdb
 ifeq (, ${DEBUG})
-DEBUG			:= NO
+DEBUG			:= YES
 endif
 # set GPROF : YES to enable gp
 ifeq (, ${GPROF})
@@ -43,29 +43,13 @@ endif
 ifeq (, ${category_magic})
 category_magic		:= 0xAA
 endif
-# set code_magic value
-ifeq (, ${code_magic})
-code_magic		:= 0x55
+# set signature_magic value
+ifeq (, ${signature_magic})
+signature_magic		:= 0x55
 endif
 # set skip unregonized code, set TRUE to enable
 ifeq (, ${SKIP_UNREG_CODE})
 SKIP_UNREG_CODE		:= FALSE
-endif
-# set endian check code 1
-ifeq (, ${endian1})
-endian1			:= 12
-endif
-# set endian check code 2
-ifeq (, ${endian2})
-endian2			:= 34
-endif
-# set endian check code 3
-ifeq (, ${endian3})
-endian3			:= 56
-endif
-# set endian check code
-ifeq (, ${endian4})
-endian4			:= 78
 endif
 
 # set xml parser tool, locale at ./extra/xxx
@@ -186,12 +170,7 @@ oemMark:
 	@echo "#define CONFIG_MAGIC	${config_magic}"					>> ${OEM_FILE}
 	@echo "#define SLOT_MAGIC	${slot_magic}"						>> ${OEM_FILE}
 	@echo "#define CATEGORY_MAGIC	${category_magic}"					>> ${OEM_FILE}
-	@echo "#define CODE_MAGIC	${code_magic}"						>> ${OEM_FILE}
-	@echo "#define ENDIAN_CHECK1	0x${endian1}"						>> ${OEM_FILE}
-	@echo "#define ENDIAN_CHECK2	0x${endian2}"						>> ${OEM_FILE}
-	@echo "#define ENDIAN_CHECK3	0x${endian3}"						>> ${OEM_FILE}
-	@echo "#define ENDIAN_CHECK4	0x${endian4}"						>> ${OEM_FILE}
-	@echo "#define ENDIAN_CHECK	0x${endian1}${endian2}${endian3}${endian4}"		>> ${OEM_FILE}
+	@echo "#define SIG_MAGIC	${signature_magic}"					>> ${OEM_FILE}
 	@echo "#define SKIP_UNREG_CODE_${SKIP_UNREG_CODE}"					>> ${OEM_FILE}
 	@echo ""										>> ${OEM_FILE}
 	@echo "#endif"										>> ${OEM_FILE}

@@ -13,20 +13,42 @@
 ParseConfigData::ParseConfigData(const char* configXml, const char* configData)
 {
 	ASSERT(configData);
+	ASSERT(configXml);
 
-	this->configStore = new StoreConfigData(configData);
-	
-	if (configXml) {
-		XMLError xmlRet = doc.LoadFile(configXml);
-		ASSERT(XML_SUCCESS == xmlRet);
-		this->xmlRoot = doc.FirstChildElement("config");
-	}
+	this->configStore 	= new StoreConfigData(configData);
+
+	doc 			= new XMLDocument();
+	ASSERT(doc);
+	XMLError xmlRet 	= doc->LoadFile(configXml);
+	ASSERT(XML_SUCCESS == xmlRet);
+	this->xmlRoot 		= doc->FirstChildElement("config");
+}
+
+/* new */
+ParseConfigData::ParseConfigData(const char* configData)
+{
+	ASSERT(configData);
+
+	this->configReader = new ReadConfigData(configData);
 }
 
 /* release */
 ParseConfigData::~ParseConfigData()
 {
-	configStore->push();
+	if (configStore)
+	{
+		configStore->~StoreConfigData();
+	}
+
+	if (doc)
+	{
+		doc->~XMLDocument();
+	}
+
+	if (configReader)
+	{
+		configReader->~ReadConfigData();
+	}
 }
 
 /* parse ascii value to hex, pad 0xFF */
@@ -741,6 +763,52 @@ int ParseConfigData::parseCategoryData(XMLElement *xmlRoot)
 			case SIMLOCK_CATEGORY_3GPP_NW:
 				parse_3gpp_Network_Category_Data(categoryElement);
 				break;
+			case SIMLOCK_CATEGORY_3GPP_NS:
+				parse_3gpp_Network_Subset_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_SP:
+				parse_3gpp_Service_Provider_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_CP:
+				parse_3gpp_Corporate_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_SPN:
+				parse_3gpp_SPN_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_SP_EHPLMN:
+				parse_3gpp_SP_EHPLMN_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_ICCID:
+				parse_3gpp_ICCID_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_IMPI:
+				parse_3gpp_IMPI_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_NS_SP:
+				parse_3gpp_NS_SP_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP_SIM:
+				parse_3gpp_SIM_Category_Data(categoryElement);
+				break;
+
+			case SIMLOCK_CATEGORY_3GPP2_NW_TYPE1:
+				parse_3gpp2_Network1_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP2_NW_TYPE2:
+				parse_3gpp2_Network2_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP2_HRPD:
+				parse_3gpp2_HRPD_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP2_SP:
+				parse_3gpp2_Service_Provider_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP2_CP:
+				parse_3gpp2_Corporate_Category_Data(categoryElement);
+				break;
+			case SIMLOCK_CATEGORY_3GPP2_RUIM:
+				parse_3gpp2_RUIM_Category_Data(categoryElement);
+				break;
 			default:
 				break;
 		}
@@ -981,10 +1049,9 @@ int ParseConfigData::parseConfigData(XMLElement *xmlOtherRoot)
 	XMLElement *parent, *child;
 	// set parent... to use the macro define
 	parent = xmlRoot;
-	// set endian check unsigned int
-	uint32 endianCheck = ENDIAN_CHECK;
-	// set pointer to endian check
-	uint8* endianPtr = (uint8*) (&endianCheck);
+	/* check endian */
+	uint32 check32 	= 0x12345678;
+	uint8  check8 	= *((uint8*)(&check32));
 
 	// set magic
 	pushUint8(CONFIG_MAGIC);
@@ -993,7 +1060,7 @@ int ParseConfigData::parseConfigData(XMLElement *xmlOtherRoot)
 	// set version mi
 	pushUint8(VERSION_MIN);
 	// set endian check
-	pushData(endianPtr, sizeof(endianCheck));
+	pushUint8(check8 == 0x12);
 	// set sizeof enum, use to avoid different enum size
 	pushUint8((uint8)sizeof(simlock_category_enum_type));
 	// set reserved byte 1
@@ -1028,12 +1095,9 @@ int ParseConfigData::parseConfigData(XMLElement *xmlOtherRoot)
 }
 
 /* parse raw data to check if the raw data gen successfully */
-int ParseConfigData::parseRawData(const char *dataFile)
+int ParseConfigData::parseRawData()
 {
-	if (dataFile)
-	{
-		this->configStore = new StoreConfigData(dataFile);
-	}
+	ASSERT(this->configReader);
 
 	// set var to hold read len
 	uint32 readLen = 0;
@@ -1045,14 +1109,8 @@ int ParseConfigData::parseRawData(const char *dataFile)
 	getAndPrintUint8('version ma', '0x%x');
 	// get version mi
 	getAndPrintUint8('version mi', '0x%x');
-	// get endian check, byte 1
-	getAndPrintUint8('endian check byte 1', '0x%x');
-	// get endian check, byte 2
-	getAndPrintUint8('endian check byte 2', '0x%x');
-	// get endian check, byte 3
-	getAndPrintUint8('endian check byte 3', '0x%x');
-	// get endian check, byte 4
-	getAndPrintUint8('endian check byte 4', '0x%x');
+	// get endian check
+	getAndPrintUint8('bigEndian', '0x%x');
 	// get sizeof enum
 	getAndPrintUint8('sizeof enum', '0x%x');
 	uint8 enumSizeExpectd = y;
@@ -1083,6 +1141,7 @@ int ParseConfigData::parseRawData(const char *dataFile)
 	/* slot setting */
 	for (int i=0; i<slotCount; i++)
 	{
+		fprintf(stdout, "==============================parsing slot config: %d BEGIN==============================\n", i);
 		// get slot_config_data_magic
 		getAndPrintUint8('slot_config_data_magic', '0x%x');
 		// get simlock_slot_enum_type
@@ -1096,6 +1155,7 @@ int ParseConfigData::parseRawData(const char *dataFile)
 		/* category setting */
 		for (int j=0; j<categoryCount; j++)
 		{
+			fprintf(stdout, "---------------------------parsing category config: %d BEGIN---------------------------\n", j);
 			// get simlock_category_data_magic
 			getAndPrintUint8('simlock_category_data_magic', '0x%x');
 			// get simlock_status_enum_type
@@ -1111,67 +1171,46 @@ int ParseConfigData::parseRawData(const char *dataFile)
 
 			/* simlock_category_data_type data */
 			simlock_category_data_type categoryData;
-			// categorySize temp to read
-			uint32 categorySize = sizeof(simlock_category_data_type);
+			// read category enum type, store with 1 byte
+			getAndPrintUint8('category_type', '0x%x');
+			// store category_type
+			categoryData.category_type = (simlock_category_enum_type)y;
+			// categorySize temp to read, this contain only the code_data, we should subtract 1 byte category_type
+			uint32 categorySize = sizeof(simlock_category_data_type) - 1;
 			/* emmmm... fix the enum size first, in case of different enum size in different compiler */
 			// runtime enum size
 			uint8 enumSizeActual = sizeof(simlock_category_enum_type);
 			// del of enum size
 			int delEnumSize = enumSizeExpectd - enumSizeActual;
-			// fix the categorySize to read
+			fprintf(stdout, "delEnumSize=%d\n");
+			// fix the categorySize to read, this contain only the code_data
 			categorySize += delEnumSize;
-			// read category enum type, store with 1 byte
-			getAndPrintUint8('category_type', '0x%x');
-			// store category_type
-			categoryData.category_type = (simlock_category_enum_type)y;
 			// read the category list buffer, it's uint8, can simply memcpy
 			readLen = getData((uint8*)(&(categoryData.code_data)), categorySize);
 			readTotalLen += readLen;
 			// check read len
 			if (readLen < categorySize)
 			{
-				fprintf(stderr, "expected to read 0x%x bytes categoryData, but actually read 0x%x bytes", categorySize, readLen);
+				fprintf(stderr, "expected to read 0x%x bytes categoryData, but actually read 0x%x bytes\n", categorySize, readLen);
 				return 1;
 			}
 			// now data read, begin to print it.
 			else
 			{
-				fprintf(stdout, "====get list buffer===, this should be handled based on category type\n");
+				fprintf(stdout, "====get list buffer===, this should be handled based on category %d type\n", categorySize);
 			}
+			fprintf(stdout, "--------------------------- parsing category config: %d END ---------------------------\n", j);
 		}
+		fprintf(stdout, "============================== parsing slot config: %d END ==============================\n", i);
 	}
 
 	return readTotalLen;
 }
 
-/* gen a test xml to check base function */
-#define TEST_XML	"test.xml"
-void ParseConfigData::genTestXml()
-{
-	FILE *file = fopen(TEST_XML, "w+");
-	char str[512];
-	strcpy(str, "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n");
-	fwrite(str, strlen(str), 1, file);
-	strcpy(str, "<config>\n");
-	fwrite(str, strlen(str), 1, file);
-	strcpy(str, "\t<slot></slot>\n");
-	fwrite(str, strlen(str), 1, file);
-	strcpy(str, "\t<slot><simlock_slot_enum_type>123</simlock_slot_enum_type></slot>\n");
-	fwrite(str, strlen(str), 1, file);
-	strcpy(str, "</config>\n");
-	fwrite(str, strlen(str), 1, file);
-	fclose(file);
-}
-
 /* test suit to check the base function */
 void ParseConfigData::runTestSuit()
 {
-	genTestXml();
-	XMLDocument doc;
-	XMLError xmlRet = doc.LoadFile(TEST_XML);
-	ASSERT(XML_SUCCESS == xmlRet);
 	ASSERT(configStore);
-	xmlRoot = doc.FirstChildElement("config");
 	ASSERT(xmlRoot);
 
 	fprintf(stdout, "BEGIN: check FIRST slot tag, expect NO simlock_slot_enum_type get!\n");
