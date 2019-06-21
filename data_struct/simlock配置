@@ -1,0 +1,6 @@
+1. 数据用tlv格式比较好． + version + magic(宏定义当前时间戳) + hmac(PerformSHA256)(本地生成), 
+为了防止平台的类型变更,应该使用自定义的类型(自定义公用.h文件)
+rawdata存储
+2. 加密格式: idea_cbc(移植) 
+3. salt, hashkey是否需要释放sharemenory?
+4. 解析: 一个decrypt buffer + pre buffer + last pointer
