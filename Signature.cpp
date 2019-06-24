@@ -251,6 +251,9 @@ void Signature::runTestSuit(const char *publicKeyPem)
 	fclose(keyPemFile);
 	// verify signature
 	ASSERT(RSA_verify(NID_sha1, md, SHA_DIGEST_LENGTH, signature, sigLen, rsaKey));
+	// emmm...verify signature failure
+	md[0] = ~md[0];
+	ASSERT(!RSA_verify(NID_sha1, md, SHA_DIGEST_LENGTH, signature, sigLen, rsaKey));
 	// free signature
 	free(signature);
 }

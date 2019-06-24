@@ -25,6 +25,7 @@ typedef enum {
 	OPTION_PARSE,
 	OPTION_CHECK,
 	OPTION_RUN_TEST_SUIT,
+	OPTION_VERSION,
 	OPTION_UNKOWN,
 } option_type;
 
@@ -92,12 +93,18 @@ option_type parseArgv(int argc, char** argv)
 		else if (!strcmp("-run-test-suit", argv[index]))
 		{
 			if (++index >= argc) return OPTION_UNKOWN;
-			configData = argv[index];
+                        configData = argv[index];
 			#ifdef DEBUG
 			fprintf(stdout, "get runTestSuit argv[%d]: %s\n", index, configData);
 			#endif
 			index++;
-			optionType 		= OPTION_RUN_TEST_SUIT;
+		}
+		else if (!strcmp("-version", argv[index]))
+		{
+			#ifdef DEBUG
+			fprintf(stdout, "get version argv[%d]: %s\n", index, argv[index]);
+			#endif
+			return OPTION_VERSION;
 		}
 		else
 		{
@@ -118,10 +125,14 @@ option_type parseArgv(int argc, char** argv)
 /* show a brief help */
 void help(const char* cmd)
 {
+	fprintf(stdout, "\n");
+	fprintf(stdout, "Version:\"%d.%d\"\n", VERSION_MAJOR, VERSION_MIN);
+	fprintf(stdout, "Release in %s\n", DATE);
 	fprintf(stdout, "Usage:\n\
+	\t %s -version\n\
 	\t %s -in <configXml> -out <configData> [-private-key <privateKeyPem>]\n\
 	\t %s -check <configData> [-public-key <publicKeyPem>]\n\
-	\t %s -run-test-suit <configData> -in <configXml> [-public-key <publicKeyPem> -private-key <privateKeyPem>]\n", cmd, cmd, cmd);
+	\t %s -run-test-suit <configData> -in <configXml> [-public-key <publicKeyPem> -private-key <privateKeyPem>]\n", cmd, cmd, cmd, cmd);
 }
 
 int main(int argc, char** argv)
@@ -202,6 +213,9 @@ int main(int argc, char** argv)
 			signature->runTestSuit(publicKeyPem);
 			signature->~Signature();
 		}
+		break;
+	case OPTION_VERSION:
+		help(argv[0]);
 		break;
 	/* show help if error accur in parsing argumenst */
 	case OPTION_UNKOWN:

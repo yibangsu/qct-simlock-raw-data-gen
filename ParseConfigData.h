@@ -5,6 +5,7 @@
 #include "StoreConfigData.h"
 #include "ReadConfigData.h"
 #include "common_def.h"
+#include "chipset.h"
 
 using namespace std;
 using namespace tinyxml2;
