@@ -230,7 +230,7 @@ oemMark:
 	@echo "#define CATEGORY_MAGIC	${category_magic}"					>> ${OEM_FILE}
 	@echo "#define SIG_MAGIC	${signature_magic}"					>> ${OEM_FILE}
 	@echo "#define SKIP_UNREG_CODE_${SKIP_UNREG_CODE}"					>> ${OEM_FILE}
-	@echo "#define DATE		\"`date`\""							>> ${OEM_FILE}
+	@echo "#define DATE		\"`date`\""						>> ${OEM_FILE}
 	@echo ""										>> ${OEM_FILE}
 	@echo "#endif"										>> ${OEM_FILE}
 

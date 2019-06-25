@@ -1053,10 +1053,10 @@ int ParseConfigData::parseConfigData(XMLElement *xmlOtherRoot)
 	uint32 check32 	= 0x12345678;
 	uint8  check8 	= *((uint8*)(&check32));
 
-	// set chipset type
-	pushUint8(CHIPSET);
 	// set magic
 	pushUint8(CONFIG_MAGIC);
+	// set chipset type
+	pushUint8(CHIPSET);
 	// set version ma
 	pushUint8(VERSION_MAJOR);
 	// set version mi
@@ -1105,10 +1105,10 @@ int ParseConfigData::parseRawData()
 	uint32 readLen = 0;
 	uint32 readTotalLen = 0;
 
-	// get chipset type
-	getAndPrintUint8('chipset type', '0x%x');
 	// get magic
 	getAndPrintUint8('magic', '0x%x');
+	// get chipset type
+	getAndPrintUint8('chipset type', '0x%x');
 	// get version ma
 	getAndPrintUint8('version ma', '0x%x');
 	// get version mi
