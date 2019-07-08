@@ -102,7 +102,7 @@ int ParseConfigData::parse_3gpp_Network_Category_Data(XMLElement *xmlRoot)
 	codeElement 				= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && nw_list_ptr->num_nw_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -141,7 +141,7 @@ int ParseConfigData::parse_3gpp_Network_Subset_Category_Data(XMLElement *xmlRoot
 	codeElement 				= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && ns_list_ptr->num_ns_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -184,7 +184,7 @@ int ParseConfigData::parse_3gpp_Service_Provider_Category_Data(XMLElement *xmlRo
 	codeElement 				= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && sp_list_ptr->num_sp_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -225,7 +225,7 @@ int ParseConfigData::parse_3gpp_Corporate_Category_Data(XMLElement *xmlRoot)
 	codeElement 				= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && cp_list_ptr->num_cp_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -268,7 +268,7 @@ int ParseConfigData::parse_3gpp_SPN_Category_Data(XMLElement *xmlRoot)
 	codeElement 					= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && spn_list_ptr->num_spn_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -309,7 +309,7 @@ int ParseConfigData::parse_3gpp_SP_EHPLMN_Category_Data(XMLElement *xmlRoot)
 	codeElement 						= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && sp_ehplmn_list_ptr->num_sp_ehplmn_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -352,7 +352,7 @@ int ParseConfigData::parse_3gpp_ICCID_Category_Data(XMLElement *xmlRoot)
 	codeElement 					= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && iccid_list_ptr->num_iccid_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -393,7 +393,7 @@ int ParseConfigData::parse_3gpp_IMPI_Category_Data(XMLElement *xmlRoot)
 	codeElement 					= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && impi_list_ptr->num_impi_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -432,7 +432,7 @@ int ParseConfigData::parse_3gpp_NS_SP_Category_Data(XMLElement *xmlRoot)
 	codeElement 					= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && ns_sp_list_ptr->num_ns_sp_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -477,7 +477,7 @@ int ParseConfigData::parse_3gpp_SIM_Category_Data(XMLElement *xmlRoot)
 	codeElement 					= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && sim_list_ptr->num_sim_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -518,7 +518,7 @@ int ParseConfigData::parse_3gpp2_Network1_Category_Data(XMLElement *xmlRoot)
 	codeElement 					= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && nw_list_ptr->num_nw_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -557,7 +557,7 @@ int ParseConfigData::parse_3gpp2_Network2_Category_Data(XMLElement *xmlRoot)
 	codeElement 						= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && nw_list_ptr->num_nw_type2_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
@@ -663,7 +663,7 @@ int ParseConfigData::parse_3gpp2_RUIM_Category_Data(XMLElement *xmlRoot)
 	codeElement 					= xmlRoot->FirstChildElement("code");
 
 	// parse code element
-	while(codeElement)
+	while(codeElement && sim_list_ptr->num_sim_codes < SIMLOCK_NUM_CODES_MAX)
 	{
 		// set parent... to use the macro define
 		parent = codeElement;
